@@ -185,7 +185,9 @@ def do_rsa(p,q):
 
 
 
-
+print(generate_large_prime(64))
+print(generate_large_prime(64))
+sys.exit()
 
 
 verbose_print = True

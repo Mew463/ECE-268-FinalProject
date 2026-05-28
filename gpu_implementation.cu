@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 
-using bignum = __int256;
+using bignum = __int128;
 
 __device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
     return (a * b) % mod;
@@ -121,8 +121,8 @@ int main() {
         // GENERATE E , D ,and N
         bignum e = 65537;
         
-        bignum p = 329886980143915040098899373145543564981;
-        bignum q = 233375799426877471479471660970431446123;
+        bignum p = 9461917253336215331;
+        bignum q = 13954742674334932447;
 
         RSAKeyPair keys = generate_keys(p, q, e);
         bignum d = keys.private_key.exponent;
