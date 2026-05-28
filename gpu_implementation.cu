@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 
-using bignum = unsigned __int128;
+using bignum = __int256;
 
 __device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
     return (a * b) % mod;
@@ -119,7 +119,7 @@ int main() {
     for(int i =0; i<NUM_TESTS;i++){
 
         // GENERATE E , D ,and N
-        int e = 65537;
+        bignum e = 65537;
         
         bignum p = 329886980143915040098899373145543564981;
         bignum q = 233375799426877471479471660970431446123;
