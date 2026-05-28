@@ -1,0 +1,162 @@
+#include <stdio.h>
+#include <cuda_runtime.h>
+
+using bignum = long long;
+
+__device__ bignum do_modular_multiplication( const bignum &a, const bignum &b, const bignum &mod) {
+    return (a * b) % mod;
+}
+
+__device__ bignum do_modular_exponentiation( const bignum &a, const bignum &b, const bignum &mod ) { // Performs square and multiply real fast
+    bignum result = 1;
+    a = a % mod;
+    while (b > 0) {
+        // If b is odd
+        if (b & 1) {
+            result = do_modular_multiplication(
+                result,
+                a,
+                mod
+            );
+        }
+        b >>= 1;
+        a = do_modular_multiplication(
+            a,
+            a,
+            mod
+        );
+    }
+    return result;
+}
+
+
+__device__ bignum extended_euclidean(bignum a, bignum b, bignum *x, bignum *y) {
+
+    if(b == 0){
+        *x = 1;
+        *y = 0;
+        return a;
+    }
+
+    bignum x1, y1;
+    bignum gcd = extended_euclidean(b, a%b, &x1, &y1);
+
+    *x = y1;
+    *y = x1 - (a/b) * y1;  
+    
+    return gcd; 
+
+}
+
+typedef struct{
+    bignum exponent;
+    bignum modulus;
+}PublicKey;
+
+typedef struct{
+    bignum exponent;
+    bignum modulus;
+}PrivateKey;
+
+typedef struct{
+    PublicKey public_key;
+    PrivateKey private_key;
+}RSAKeyPair;
+
+__device__ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
+    RSAKeyPair keys;
+    bignum n = p*q;
+    bignum phi_n = (p-1)*(q-1);
+
+    bignum x, y;
+
+    bignum gcd = extended_euclidean(e, phi_n, &x, &y);
+    
+    if(gcd != 1){
+        printf("Error: e and phi_n are not coprime! ;( \n")
+    }
+    
+    bignum d = (x % phi_n + phi_n) % phi_n; // c++ doesn't have a clean mod so we need to do this
+
+    keys.public_key.exponent = e;
+    keys.public_key.modulus = n;
+    keys.private_key.exponent = d;
+    keys.private_key.modulus = n;
+    
+    return keys;
+}
+
+
+__device__ char decrypt(const bignum &d, const bignum &n, const bignum &c) {
+    return do_modular_exponentiation(c, d, n);  
+}
+
+__device__ bignum encrypt(const bignum &e, const bignum &n, const char &message) {
+    return do_modular_exponentiation(message, e, n);
+}
+
+__global__ void parallel_rsa_encrypt_decrypt(int *input_message, const int &size_message, int *output_message, const bignum &e, const bignum &d, const bignum &n) { // Function that all threads run 
+    int tx = threadIdx.x;
+    int bs = blockDim.x; // Num threads per block
+
+    int chars_per_thread = ceilf(float(size_message) / float(bs));
+    for(int i=0;i<chars_per_thread; i++){
+        int idx = (i*bs)+tx
+        if(idx < size_message) {
+            char input_char = input_message[idx]; 
+            bignum output = encrypt(e, n, input_char);
+            char outChar = decrypt(output, d, n);
+            output_message[idx] = outChar;
+        }
+    }
+
+}
+
+
+int main() {
+
+    int NUM_TESTS = 10;
+    float total_time = 0;
+    for(int i =0; i<NUM_TESTS;i++){
+
+        // GENERATE E , D ,and N
+        int e = 65537;
+        
+        int p = 329886980143915040098899373145543564981;
+        int q = 233375799426877471479471660970431446123;
+
+        RSAKeyPair keys = generate_keys(p, q, e)
+        int d = keys.private_key.exponent;
+        int n = keys.private_key.modulus;
+
+        printf("Launching kernel...\n");
+        char original_message[] = "Hello this is Bob";
+        int size_message = sizeof(original_message) / sizeof(original_message[0]);
+        char output_message[100];
+
+
+        // Begin timer operations
+        float test_time = 0;
+        cudaEvent_t start, stop;
+        cudaEventCreate(&start);
+        cudaEventCreate(&stop);
+        cudaEventRecord(start, 0);
+
+        // Run Kernel
+        parallel_rsa_encrypt_decrypt<<<1, 1>>>(original_message, size_message, output_message, e, d, n); // Blocks, Threads
+        
+        // Conclude timer operations
+        cudaEventRecord(stop, 0);
+        cudaEventSynchronize(stop);
+        cudaEventElapsedTime(&test_time, start, stop);
+        cudaEventDestroy(start);
+        cudaEventDestroy(stop);
+        cudaDeviceSynchronize();
+
+        // Update total accumulated time
+        total_time+=test_time;
+    }
+    printf("Done.\n");
+    printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n",NUM_TESTS, ceilf(float(total_time)/float(NUM_TESTS)));
+    return 0;
+}

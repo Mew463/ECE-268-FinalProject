@@ -1,6 +1,7 @@
 import time
 import argparse
 import random
+import sys
 
 
 verbose_print = False
@@ -159,6 +160,7 @@ def do_rsa(p,q):
     original_message = "Hello this is Bob"
     print_v(f"Bob wants to send '{original_message}' to Alice")
     # encrypted_message = do_modular_exponentiation(original_message,e,n)      # Only Bob has this
+    # print(keyset)
     encrypted_message = encrypt(keyset["public_key"], original_message)
     # print_v(f"Bob is actually sending '{encrypted_message}' on the channel")
 
