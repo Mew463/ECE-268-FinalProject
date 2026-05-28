@@ -7,3 +7,6 @@ Modular inverse (via Fermat or Extended Euclidean).
 
 ## Applying 
 Apply your unit to a real cryptographic operation (e.g., scalar multiplication, RSA, or Number Theoretic Transform).
+
+# Compile and Run on C++
+nvcc test.cu -o test && ./test
