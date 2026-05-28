@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 
-using bignum = long long;
+using bignum = __int128;
 
-__device__ bignum do_modular_multiplication( const bignum &a, const bignum &b, const bignum &mod) {
+__device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
     return (a * b) % mod;
 }
 
-__device__ bignum do_modular_exponentiation( bignum &a, bignum &b, const bignum &mod ) { // Performs square and multiply real fast
+__device__ bignum do_modular_exponentiation( bignum &a, bignum &b, bignum &mod ) { // Performs square and multiply real fast
     bignum result = 1;
     a = a % mod;
     while (b > 0) {
@@ -29,8 +29,7 @@ __device__ bignum do_modular_exponentiation( bignum &a, bignum &b, const bignum 
     return result;
 }
 
-
-__device__ bignum extended_euclidean(bignum a, bignum b, bignum *x, bignum *y) {
+bignum extended_euclidean(bignum a, bignum b, bignum *x, bignum *y) {
 
     if(b == 0){
         *x = 1;
@@ -87,15 +86,15 @@ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
 }
 
 
-__device__ char decrypt(const bignum &d, const bignum &n, const bignum &c) {
+__device__ char decrypt( bignum &d,  bignum &n,  bignum &c) {
     return do_modular_exponentiation(c, d, n);  
 }
 
-__device__ bignum encrypt(const bignum &e, const bignum &n, const char &message) {
+__device__ bignum encrypt( bignum &e,  bignum &n, char &message) {
     return do_modular_exponentiation(message, e, n);
 }
 
-__global__ void parallel_rsa_encrypt_decrypt(int *input_message, const int &size_message, int *output_message, const bignum &e, const bignum &d, const bignum &n) { // Function that all threads run 
+__global__ void parallel_rsa_encrypt_decrypt(int *input_message,  int &size_message, int *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
@@ -125,7 +124,7 @@ int main() {
         bignum p = 329886980143915040098899373145543564981;
         bignum q = 233375799426877471479471660970431446123;
 
-        RSAKeyPair keys = generate_keys(p, q, e)
+        RSAKeyPair keys = generate_keys(p, q, e);
         bignum d = keys.private_key.exponent;
         bignum n = keys.private_key.modulus;
 
