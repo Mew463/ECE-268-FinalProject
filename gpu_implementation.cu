@@ -91,7 +91,8 @@ __device__ char decrypt( bignum &d,  bignum &n,  bignum &c) {
 }
 
 __device__ bignum encrypt( bignum &e,  bignum &n, char message) {
-    return do_modular_exponentiation(int(message), e, n);
+    // __int128 big_message = (unsigned char)message;
+    return do_modular_exponentiation((int)message, e, n);
 }
 
 __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_message, char *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
