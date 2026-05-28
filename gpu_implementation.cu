@@ -90,7 +90,7 @@ __device__ char decrypt( bignum &d,  bignum &n,  bignum &c) {
     return do_modular_exponentiation(c, d, n);  
 }
 
-__device__ bignum encrypt( bignum &e,  bignum &n, char message) {
+__device__ bignum encrypt( bignum e, bignum n, char message) {
     // __int128 big_message = (unsigned char)message;
     return do_modular_exponentiation((int)message, e, n);
 }
