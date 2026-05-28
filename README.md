@@ -9,4 +9,4 @@ Modular inverse (via Fermat or Extended Euclidean).
 Apply your unit to a real cryptographic operation (e.g., scalar multiplication, RSA, or Number Theoretic Transform).
 
 # Compile and Run on C++
-nvcc test.cu -o test && ./test
+nvcc gpu_implementation.cu -o test && ./test

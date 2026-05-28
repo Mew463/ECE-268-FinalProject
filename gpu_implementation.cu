@@ -7,7 +7,7 @@ __device__ bignum do_modular_multiplication( const bignum &a, const bignum &b, c
     return (a * b) % mod;
 }
 
-__device__ bignum do_modular_exponentiation( const bignum &a, const bignum &b, const bignum &mod ) { // Performs square and multiply real fast
+__device__ bignum do_modular_exponentiation( bignum &a, bignum &b, const bignum &mod ) { // Performs square and multiply real fast
     bignum result = 1;
     a = a % mod;
     while (b > 0) {
@@ -63,7 +63,7 @@ typedef struct{
     PrivateKey private_key;
 }RSAKeyPair;
 
-__device__ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
+RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
     RSAKeyPair keys;
     bignum n = p*q;
     bignum phi_n = (p-1)*(q-1);
@@ -73,7 +73,7 @@ __device__ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
     bignum gcd = extended_euclidean(e, phi_n, &x, &y);
     
     if(gcd != 1){
-        printf("Error: e and phi_n are not coprime! ;( \n")
+        printf("Error: e and phi_n are not coprime! ;( \n");
     }
     
     bignum d = (x % phi_n + phi_n) % phi_n; // c++ doesn't have a clean mod so we need to do this
@@ -101,7 +101,7 @@ __global__ void parallel_rsa_encrypt_decrypt(int *input_message, const int &size
 
     int chars_per_thread = ceilf(float(size_message) / float(bs));
     for(int i=0;i<chars_per_thread; i++){
-        int idx = (i*bs)+tx
+        int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx]; 
             bignum output = encrypt(e, n, input_char);
@@ -122,12 +122,12 @@ int main() {
         // GENERATE E , D ,and N
         int e = 65537;
         
-        int p = 329886980143915040098899373145543564981;
-        int q = 233375799426877471479471660970431446123;
+        bignum p = 329886980143915040098899373145543564981;
+        bignum q = 233375799426877471479471660970431446123;
 
         RSAKeyPair keys = generate_keys(p, q, e)
-        int d = keys.private_key.exponent;
-        int n = keys.private_key.modulus;
+        bignum d = keys.private_key.exponent;
+        bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
         char original_message[] = "Hello this is Bob";
