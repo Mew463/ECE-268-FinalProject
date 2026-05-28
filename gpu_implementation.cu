@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 
-using bignum = __int128;
+using bignum = unsigned __int128;
 
 __device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
     return (a * b) % mod;
