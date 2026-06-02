@@ -3,7 +3,7 @@
 
 using bignum = __int128;
 
-__device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
+__device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
     return (a * b) % mod;
 }
 
@@ -86,7 +86,7 @@ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
 }
 
 
-__device__ char decrypt( bignum d,  bignum n,  bignum c) {
+__device__ char decrypt( bignum &d,  bignum &n,  bignum &c) {
     return do_modular_exponentiation(c, d, n);  
 }
 
@@ -95,7 +95,7 @@ __device__ bignum encrypt( bignum e, bignum n, char message) {
     return do_modular_exponentiation((int)message, e, n);
 }
 
-__device__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_message, char *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
+__global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_message, char *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
@@ -113,7 +113,16 @@ __device__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
 }
 
 
-__global__ void gpu_main(){
+
+
+
+
+
+
+
+
+int main() {
+
     int NUM_TESTS = 10;
     float total_time = 0;
     for(int i =0; i<NUM_TESTS;i++){
@@ -134,16 +143,25 @@ __global__ void gpu_main(){
         char output_message[100];
 
 
+        char *d_input;
+        char *d_output;
+        
+        cudaMalloc(&d_input, size_message * sizeof(char));
+        cudaMalloc(&d_output, size_message * sizeof(char));
+        
+        cudaMemcpy(d_input, original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
+                
         // Begin timer operations
         float test_time = 0;
         cudaEvent_t start, stop;
         cudaEventCreate(&start);
         cudaEventCreate(&stop);
         cudaEventRecord(start, 0);
-
-        // Run Kernel
-        parallel_rsa_encrypt_decrypt(original_message, size_message, output_message, e, d, n); // Blocks, Threads
         
+        // Run Kernel
+
+        parallel_rsa_encrypt_decrypt<<<1, 8>>>(d_input, size_message, d_output, e, d, n);
+
         // Conclude timer operations
         cudaEventRecord(stop, 0);
         cudaEventSynchronize(stop);
@@ -162,18 +180,5 @@ __global__ void gpu_main(){
     }
     printf("Done.\n");
     printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n",NUM_TESTS, ceilf(float(total_time)/float(NUM_TESTS)));
-    // return 0;
-}
-
-
-
-
-
-
-
-int main() {
-    gpu_main<<<1, 1>>>();
-
     return 0;
-    
 }
