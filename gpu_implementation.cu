@@ -121,7 +121,6 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
             char outChar = decrypt(d, n, output);
             printf("OUTPUT CHAR: %c\n", outChar);
             output_message[idx] = outChar;
-            printf("output_mesage[]: %c\n", input_char);
         }
     }
     
@@ -156,7 +155,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "Hello this is Bob";
+        char original_message[] = "HHHHABCDEFGHello this is Bob";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
