@@ -286,7 +286,7 @@ int main() {
         // bignum q = 879811033379399741;
         bignum p = generate_prime(60);
         bignum q = generate_prime(60);
-        printf("P: %d and q %d", p)
+        printf("P: %d and q %d", p);
         printf("P: %" PRIu64 ", and ", p);
         printf("q:   %" PRIx64 "\n", q);
 
