@@ -99,14 +99,14 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
-    // if (tx == 0) {
-    //     printf("INPUT MESSAGE FROM GPU: ");
-    //     for (int i = 0; i < size_message; i++) {
-    //         printf("%c", input_message[i]);
-    //     }
-    //     printf("\n");
-    // }
-    // __syncthreads();
+    if (tx == 0) {
+        printf("INPUT MESSAGE FROM GPU: ");
+        for (int i = 0; i < size_message; i++) {
+            printf("%c", input_message[i]);
+        }
+        printf("\n");
+    }
+    __syncthreads();
 
     int chars_per_thread = ceilf(float(size_message) / float(bs));
     for(int i=0;i<chars_per_thread; i++){
@@ -118,15 +118,15 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
             output_message[idx] = outChar;
         }
     }
-
-    // if (tx == 0) {
-    //     printf("OUTPUT MESSAGE FROM GPU: ");
-    //     for (int i = 0; i < size_message; i++) {
-    //         printf("%c", output_message[i]);
-    //     }
-    //     printf("\n");
-    // }
-    // __syncthreads();
+    
+    __syncthreads();
+    if (tx == 0) {
+        printf("OUTPUT MESSAGE FROM GPU: ");
+        for (int i = 0; i < size_message; i++) {
+            printf("%c", output_message[i]);
+        }
+        printf("\n");
+    }
 
 }
 
@@ -139,8 +139,11 @@ int main() {
         // GENERATE E , D ,and N
         bignum e = 65537;
         
-        bignum p = 9461917253336215331;
-        bignum q = 13954742674334932447;
+        // bignum p = 9461917253336215331;
+        // bignum q = 13954742674334932447;
+
+        // bignum p = 9461917253336215331;
+        // bignum q = 13954742674334932447;
 
         RSAKeyPair keys = generate_keys(p, q, e);
         bignum d = keys.private_key.exponent;
@@ -180,6 +183,8 @@ int main() {
         cudaDeviceSynchronize();
 
         cudaMemcpy(output_message, d_output, size_message * sizeof(char), cudaMemcpyDeviceToHost);
+
+        printf("TOOK %f SECONDS TO RUN THIS TEST");
 
         for(int char_num = 0; char_num<100;char_num++){
             printf("%d",int(output_message[char_num]));
