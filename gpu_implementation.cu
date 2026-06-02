@@ -309,6 +309,9 @@ int main() {
         "wouldn't have to look at the floundering legs, and only stopped when"
         "he began to feel a mild, dull pain there that he had never felt"
         "before.";
+        int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
+        msg_size = size_message;
+        char output_message[2000];
     for(int i =0; i<NUM_TESTS;i++){
 
         // GENERATE E , D ,and N
@@ -332,13 +335,7 @@ int main() {
         printf("Launching kernel...\n");
         
         
-        
-        
-        int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
-        msg_size = size_message;
-        char output_message[2000];
-
-
+    
         char *d_input;
         char *d_output;
         
