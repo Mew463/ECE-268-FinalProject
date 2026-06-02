@@ -3,7 +3,7 @@
 
 using bignum = __int128;
 
-VERBOSE_PRINT = true;
+#define VERBOSE_PRINT = true;
 
 __device__ void verbose_printf(const char* message) {
     if(threadIdx.x && VERBOSE_PRINT){
