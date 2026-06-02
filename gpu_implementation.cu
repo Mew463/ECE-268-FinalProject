@@ -2,7 +2,7 @@
 #include <cuda_runtime.h>
 #include <cstdint>
 #include <random>
-
+#include <inttypes.h>
 
 using bignum = __int128;
 
@@ -287,6 +287,8 @@ int main() {
         bignum p = generate_prime(60);
         bignum q = generate_prime(60);
         printf("P: %d and q %d", p)
+        printf("P: %" PRIu64 ", and ", p);
+        printf("q:   %" PRIx64 "\n", q);
 
         // bignum p = 13;
         // bignum q = 131;

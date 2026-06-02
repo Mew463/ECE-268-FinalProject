@@ -230,10 +230,11 @@ def do_rsa(p,q):
 verbose_print = False
 
 sum_time = 0
-num_iter = 50
+num_iter = 10
+prime_size = 60
 for i in range(num_iter):    
-    p = generate_large_prime(128)
-    q = generate_large_prime(128)
+    p = generate_large_prime(prime_size)
+    q = generate_large_prime(prime_size)
     start_time = time.perf_counter()          
     do_rsa(p=p,q=q)
     end_time = time.perf_counter()
