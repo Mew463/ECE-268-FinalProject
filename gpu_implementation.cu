@@ -346,6 +346,11 @@ int main() {
         
         cudaMemcpy(d_input, original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
                 
+        // Run Kernel
+        int numThreads = 1024;
+        int numBlocks = 1;
+
+
         // Begin timer operations
         float test_time = 0;
         cudaEvent_t start, stop;
@@ -353,17 +358,9 @@ int main() {
         cudaEventCreate(&stop);
         cudaEventRecord(start, 0);
         
-        // Run Kernel
-        int numThreads = 1024;
-        int numBlocks = 1;
-
+  
         parallel_rsa_encrypt_decrypt<<<numBlocks, numThreads>>>(d_input, size_message, d_output, e, d, n);
-        cudaError_t err = cudaGetLastError();
-
-        if (err != cudaSuccess) {
-            printf("Kernel launch failed: %s\n",
-                cudaGetErrorString(err));
-        }
+       
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
@@ -373,6 +370,13 @@ int main() {
         cudaEventDestroy(stop);
         cudaDeviceSynchronize();
 
+
+         cudaError_t err = cudaGetLastError();
+
+        if (err != cudaSuccess) {
+            printf("Kernel launch failed: %s\n",
+                cudaGetErrorString(err));
+        }
         cudaMemcpy(output_message, d_output, size_message * sizeof(char), cudaMemcpyDeviceToHost);
 
         // Update total accumulated time
@@ -392,10 +396,10 @@ int main() {
     }
     printf("Done.\n");
 
-    printf("Printing output message...\n");
-    for(int z = 0; z < msg_size;z++ ){
-        printf("%c", output_message[z]);
-    }
+    // printf("Printing output message...\n");
+    // for(int z = 0; z < msg_size;z++ ){
+    //     printf("%c", output_message[z]);
+    // }
 
     if(num_errors == 0){
         printf("Data Matched ! :D\n");
