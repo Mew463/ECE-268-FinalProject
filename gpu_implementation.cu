@@ -29,7 +29,6 @@ __device__ void print_int128(__int128 x) {
 }
 
 __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
-    // return (a * b) % mod;
     bignum result = 0;
     a %= mod;
 
@@ -189,13 +188,9 @@ int main() {
 
         // GENERATE E , D ,and N
         bignum e = 65537;
-        // bignum e = 7;
         
         bignum p = 958475160727834319;
         bignum q = 879811033379399741;
-
-
-        
 
         // bignum p = 13;
         // bignum q = 131;
@@ -227,7 +222,7 @@ int main() {
         
         // Run Kernel
 
-        parallel_rsa_encrypt_decrypt<<<1, 1>>>(d_input, size_message, d_output, e, d, n);
+        parallel_rsa_encrypt_decrypt<<<1, 32>>>(d_input, size_message, d_output, e, d, n);
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
