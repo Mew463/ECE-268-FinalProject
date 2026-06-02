@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
+#include <cstdint>
+#include <random>
+
 
 using bignum = __int128;
 
@@ -43,6 +46,8 @@ __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
     return result;
 }
 
+
+
 __device__ bignum do_modular_exponentiation( bignum a, bignum b, bignum mod ) { // Performs square and multiply real fast
     bignum result = 1;
     a = a % mod;
@@ -82,6 +87,117 @@ bignum extended_euclidean(bignum a, bignum b, bignum *x, bignum *y) {
     return gcd; 
 
 }
+
+std::mt19937_64 rng(std::random_device{}());
+
+uint64_t random64()
+{
+    return rng();
+}
+bignum mod_mul(bignum a, bignum b, bignum mod) //cpu version
+{
+    bignum result = 0;
+    a %= mod;
+
+    while (b > 0){
+        if (b & 1)
+            result = (result + a) % mod;
+
+        a = (a + a) % mod;
+        b >>= 1;
+    }
+    return result;
+}
+
+
+bignum mod_exp( bignum a, bignum b, bignum mod ) { //cpu version
+    bignum result = 1;
+    a = a % mod;
+    while (b > 0) {
+        // If b is odd
+        if (b & 1) {
+            result = mod_mul(
+                result,
+                a,
+                mod
+            );
+        }
+        b >>= 1;
+        a = mod_mul(
+            a,
+            a,
+            mod
+        );
+    }
+    return result;
+}
+
+// MILLER-RABIN for large prime generation ;)
+
+bool is_prime(uint64_t n, int rounds = 10)
+{
+    if (n < 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
+
+    uint64_t d = n - 1;
+    int r = 0;
+
+    while ((d & 1) == 0)
+    {
+        d >>= 1;
+        r++;
+    }
+
+    std::uniform_int_distribution<uint64_t> dist(2, n - 2);
+
+    for (int i = 0; i < rounds; i++)
+    {
+        uint64_t a = dist(rng);
+
+        uint64_t x = mod_exp(a, d, n);
+
+        if (x == 1 || x == n - 1)
+            continue;
+
+        bool witness = true;
+
+        for (int j = 0; j < r - 1; j++)
+        {
+            x = mod_mul(x, x, n);
+
+            if (x == n - 1)
+            {
+                witness = false;
+                break;
+            }
+        }
+
+        if (witness)
+            return false;
+    }
+
+    return true;
+}
+
+
+uint64_t generate_prime(int bits = 64)
+{
+    while (true)
+    {
+        uint64_t num = random64();
+
+        if (bits < 64)
+            num &= ((1ULL << bits) - 1);
+
+        num |= (1ULL << (bits - 1)); // ensure top bit
+        num |= 1ULL;                 // ensure odd
+
+        if (is_prime(num))
+            return num;
+    }
+}
+
 
 typedef struct{
     bignum exponent;
@@ -135,43 +251,20 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
-    // if (tx == 0) {
-    //         printf("INPUT MESSAGE FROM GPU: \n");
-    //         for (int i = 0; i < size_message; i++) {
-    //             printf("%c", input_message[i]);
-    //         }
-    //         printf("\n");
-        
-    // }
-    // __syncthreads();
-
     int chars_per_thread = ceilf(float(size_message) / float(bs));
 
     for(int i=0;i<chars_per_thread; i++){
         int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx];
-            // printf("INPUT CHAR: %c\n", input_char);
+
             bignum output = encrypt(e, n, input_char);
-            // printf("output after encrypt: ");
-            // print_int128(output);
-            // printf("\n");
+
             char outChar = decrypt(d, n, output);
-            // printf("OUTPUT CHAR num: %d\n", outChar);
             
             output_message[idx] = outChar;
         }
     }
-    
-    // __syncthreads();
-    // if (tx == 0) {
-    //     printf("OUTPUT MESSAGE FROM GPU: \n");
-    //     for (int i = 0; i < size_message; i++) {
-    //         printf("%c", output_message[i]);
-    //     }
-    //     printf("\n");
-        
-    // }
 
 }
 
@@ -181,7 +274,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 
 int main() {
 
-
+    int num_errors = 0;
     int NUM_TESTS = 1;
     float total_time = 0;
     for(int i =0; i<NUM_TESTS;i++){
@@ -189,8 +282,10 @@ int main() {
         // GENERATE E , D ,and N
         bignum e = 65537;
         
-        bignum p = 958475160727834319;
-        bignum q = 879811033379399741;
+        // bignum p = 958475160727834319;
+        // bignum q = 879811033379399741;
+        bignum p = generate_prime(60);
+        bignum q = generate_prime(60);
 
         // bignum p = 13;
         // bignum q = 131;
@@ -200,7 +295,40 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "Hello this is Bob";
+        char original_message[] = 
+        "One morning, when Gregor Samsa woke from troubled dreams, he found"
+        "himself transformed in his bed into a horrible vermin.  He lay on"
+        "his armour-like back, and if he lifted his head a little he could"
+        "see his brown belly, slightly domed and divided by arches into stiff"
+        "sections.  The bedding was hardly able to cover it and seemed ready"
+        "to slide off any moment.  His many legs, pitifully thin compared"
+        "with the size of the rest of him, waved about helplessly as he"
+        "looked."
+
+        "'What's happened to me?' he thought.  It wasn't a dream.  His room,"
+        "a proper human room although a little too small, lay peacefully"
+        "between its four familiar walls.  A collection of textile samples"
+        "lay spread out on the table - Samsa was a travelling salesman - and"
+        "above it there hung a picture that he had recently cut out of an"
+        "illustrated magazine and housed in a nice, gilded frame.  It showed"
+        "a lady fitted out with a fur hat and fur boa who sat upright,"
+        "raising a heavy fur muff that covered the whole of her lower arm"
+        "towards the viewer."
+
+        "Gregor then turned to look out the window at the dull weather."
+        "Drops of rain could be heard hitting the pane, which made him feel"
+        "quite sad.  How about if I sleep a little bit longer and forget all"
+        "this nonsense, he thought, but that was something he was unable to"
+        "do because he was used to sleeping on his right, and in his present"
+        "state couldn't get into that position.  However hard he threw"
+        "himself onto his right, he always rolled back to where he was.  He"
+        "must have tried it a hundred times, shut his eyes so that he"
+        "wouldn't have to look at the floundering legs, and only stopped when"
+        "he began to feel a mild, dull pain there that he had never felt"
+        "before.";
+        
+        
+        
         int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
         char output_message[100];
 
@@ -221,8 +349,10 @@ int main() {
         cudaEventRecord(start, 0);
         
         // Run Kernel
+        int numThreads = 32;
+        int numBlocks = 1;
 
-        parallel_rsa_encrypt_decrypt<<<1, 32>>>(d_input, size_message, d_output, e, d, n);
+        parallel_rsa_encrypt_decrypt<<<1, numThreads>>>(d_input, size_message, d_output, e, d, n);
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
@@ -234,12 +364,23 @@ int main() {
 
         cudaMemcpy(output_message, d_output, size_message * sizeof(char), cudaMemcpyDeviceToHost);
 
-        // printf(output_message);
-
         // Update total accumulated time
         total_time+=test_time;
+
+        // Verify message
+        if(strcmp(original_message,output_message) != 0){
+            num_errors++;
+        }
+
     }
     printf("Done.\n");
+
+    if(num_errors == 0){
+        printf("Data Matched ! :D\n");
+    } else {
+        printf("Detected %d errors :(\n")
+    }
+
     printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n", NUM_TESTS, (double)ceilf(float(total_time)/float(NUM_TESTS)));
     return 0;
 }

@@ -5,6 +5,7 @@ import sys
 
 
 verbose_print = False
+num_errors = 0
 
 def do_modular_multiplication(a, b, mod):
     return (a * b) % mod
@@ -157,7 +158,42 @@ def do_rsa(p,q):
 
 
     # Bob will then encrypt his message using Alice's public key components
-    original_message = "Hello this is Bob"
+    original_message = """
+    
+        One morning, when Gregor Samsa woke from troubled dreams, he found
+        himself transformed in his bed into a horrible vermin.  He lay on
+        his armour-like back, and if he lifted his head a little he could
+        see his brown belly, slightly domed and divided by arches into stiff
+        sections.  The bedding was hardly able to cover it and seemed ready
+        to slide off any moment.  His many legs, pitifully thin compared
+        with the size of the rest of him, waved about helplessly as he
+        looked.
+
+        "What's happened to me?" he thought.  It wasn't a dream.  His room,
+        a proper human room although a little too small, lay peacefully
+        between its four familiar walls.  A collection of textile samples
+        lay spread out on the table - Samsa was a travelling salesman - and
+        above it there hung a picture that he had recently cut out of an
+        illustrated magazine and housed in a nice, gilded frame.  It showed
+        a lady fitted out with a fur hat and fur boa who sat upright,
+        raising a heavy fur muff that covered the whole of her lower arm
+        towards the viewer.
+
+        Gregor then turned to look out the window at the dull weather.
+        Drops of rain could be heard hitting the pane, which made him feel
+        quite sad.  "How about if I sleep a little bit longer and forget all
+        this nonsense", he thought, but that was something he was unable to
+        do because he was used to sleeping on his right, and in his present
+        state couldn't get into that position.  However hard he threw
+        himself onto his right, he always rolled back to where he was.  He
+        must have tried it a hundred times, shut his eyes so that he
+        wouldn't have to look at the floundering legs, and only stopped when
+        he began to feel a mild, dull pain there that he had never felt
+        before.
+
+    """
+
+
     print_v(f"Bob wants to send '{original_message}' to Alice")
     # encrypted_message = do_modular_exponentiation(original_message,e,n)      # Only Bob has this
     # print(keyset)
@@ -182,20 +218,30 @@ def do_rsa(p,q):
     decrypted_message = decrypt(keyset["private_key"], message_to_decrypt)
     # decrypted_message = do_modular_exponentiation(message_to_decrypt,d,n)
     print_v(f"Alice decrypts Bob's message as: '{decrypted_message}'")
+    
+    global num_errors
+    if(original_message != decrypted_message):
+        print_v(f"Data ERROR: \n Original message: {original_message} \n Decrypted Message: {decrypted_message}")
+        num_errors +=1
 
+        
 
 
 verbose_print = False
 
 sum_time = 0
-num_iter = 1000
+num_iter = 50
 for i in range(num_iter):    
     p = generate_large_prime(128)
-    q =  generate_large_prime(128)
+    q = generate_large_prime(128)
     start_time = time.perf_counter()          
     do_rsa(p=p,q=q)
     end_time = time.perf_counter()
     sum_time+=(end_time-start_time)
+if(num_errors == 0):
+    print("All data matched :D")
+else:
+    print(f"Detected {num_errors} :(")
 print(f"RSA average time (ms): {1000 * sum_time/num_iter }")
 
 
