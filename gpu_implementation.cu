@@ -95,7 +95,7 @@ __device__ bignum encrypt( bignum e, bignum n, char message) {
     return do_modular_exponentiation((int)message, e, n);
 }
 
-__global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_message, char *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
+__device__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_message, char *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
@@ -162,7 +162,7 @@ __global__ void gpu_main(){
     }
     printf("Done.\n");
     printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n",NUM_TESTS, ceilf(float(total_time)/float(NUM_TESTS)));
-    return 0;
+    // return 0;
 }
 
 
@@ -173,5 +173,7 @@ __global__ void gpu_main(){
 
 int main() {
     gpu_main<<<1, 1>>>();
+
+    return 0;
     
 }
