@@ -158,7 +158,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 int main() {
 
 
-    int NUM_TESTS = 10;
+    int NUM_TESTS = 1;
     float total_time = 0;
     for(int i =0; i<NUM_TESTS;i++){
 
