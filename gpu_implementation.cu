@@ -3,7 +3,7 @@
 
 using bignum = __int128;
 
-void print_int128(__int128 x) {
+__device__ void print_int128(__int128 x) {
     if (x == 0) {
         printf("0");
         return;
