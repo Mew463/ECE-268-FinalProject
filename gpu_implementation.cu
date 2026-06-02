@@ -221,6 +221,6 @@ int main() {
         total_time+=test_time;
     }
     printf("Done.\n");
-    printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n",NUM_TESTS, (double)(ceilf(float(total_time)/float(NUM_TESTS)));
+    printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n",NUM_TESTS, (double)ceilf(float(total_time)/float(NUM_TESTS)));
     return 0;
 }
