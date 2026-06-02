@@ -379,7 +379,7 @@ int main() {
 
     }
     printf("Done.\n");
-    for(int z = 0; z < msg_Size;z++ ){
+    for(int z = 0; z < msg_size;z++ ){
         printf("%c",output_message[z]);
     }
 
