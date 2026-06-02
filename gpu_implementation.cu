@@ -274,6 +274,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 
 int main() {
 
+    int msg_size = 0;
     int num_errors = 0;
     int NUM_TESTS = 1;
     float total_time = 0;
@@ -333,6 +334,7 @@ int main() {
         
         
         int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
+        msg_size = size_message;
         char output_message[2000];
 
 
@@ -377,7 +379,7 @@ int main() {
 
     }
     printf("Done.\n");
-    for(int z = 0; z < size_message;z++ ){
+    for(int z = 0; z < msg_Size;z++ ){
         printf("%c",output_message[z]);
     }
 
