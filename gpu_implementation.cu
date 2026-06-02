@@ -156,7 +156,6 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 
 int main() {
 
-    VERBOSE_PRINT = true;
 
     int NUM_TESTS = 10;
     float total_time = 0;
