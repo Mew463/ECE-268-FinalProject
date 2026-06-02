@@ -3,7 +3,29 @@
 
 using bignum = __int128;
 
+void print_int128(__int128 x) {
+    if (x == 0) {
+        printf("0");
+        return;
+    }
 
+    if (x < 0) {
+        printf("-");
+        x = -x;
+    }
+
+    char buf[50];
+    int i = 0;
+
+    while (x > 0) {
+        buf[i++] = '0' + (x % 10);
+        x /= 10;
+    }
+
+    while (i--) {
+        putchar(buf[i]);
+    }
+}
 
 __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
     // return (a * b) % mod;
@@ -131,9 +153,11 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
             char input_char = input_message[idx];
             printf("INPUT CHAR: %c\n", input_char);
             bignum output = encrypt(e, n, input_char);
-            printf("output after encrypt: %d\n", output);
+            printf("output after encrypt: ");
+            print_int128(output);
+            printf("\n");
             char outChar = decrypt(d, n, output);
-            printf("OUTPUT CHAR: %c\n", outChar);
+            printf("OUTPUT CHAR num: %d\n", outChar);
             
             output_message[idx] = outChar;
         }
