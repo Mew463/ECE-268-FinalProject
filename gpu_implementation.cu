@@ -201,7 +201,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "a";
+        char original_message[] = "AXYZabcdef";
         int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
         char output_message[100];
 
