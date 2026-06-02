@@ -253,20 +253,15 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 
     int chars_per_thread = ceilf(float(size_message) / float(bs));
 
-    printf("size_msg: %d,  chars_per:%d\n",size_message,chars_per_thread);
-
     for(int i=0;i<chars_per_thread; i++){
         int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx];
-
             bignum output = encrypt(e, n, input_char);
-
             char outChar = decrypt(d, n, output);
-            
             output_message[idx] = outChar;
-            printf("INPUT: %c\n",input_char);
-            printf("OUTPUT: %c\n",outChar);
+            // printf("INPUT: %c\n",input_char);
+            // printf("OUTPUT: %c\n",outChar);
             
         }
     }
@@ -397,9 +392,9 @@ int main() {
     }
     printf("Done.\n");
 
-    
+    printf("Printing output message...\n");
     for(int z = 0; z < msg_size;z++ ){
-        printf("%d", (int)output_message[z]);
+        printf("%c", output_message[z]);
     }
 
     if(num_errors == 0){
