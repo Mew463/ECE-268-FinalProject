@@ -100,11 +100,11 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
     int bs = blockDim.x; // Num threads per block
 
     if (tx == 0) {
-        printf("INPUT MESSAGE FROM GPU: \n");
+        verbose_printf("INPUT MESSAGE FROM GPU: \n");
         for (int i = 0; i < size_message; i++) {
             printf("%c", input_message[i]);
         }
-        printf("\n");
+        verbose_printf("\n");
     }
     __syncthreads();
 
@@ -114,21 +114,21 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
         int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx]; 
-            printf("INPUT CHAR: %c\n", input_char);
+            verbose_printf("INPUT CHAR: %c\n", input_char);
             bignum output = encrypt(e, n, input_char);
             char outChar = decrypt(d, n, output);
-            printf("OUTPUT CHAR: %c\n", outChar);
+            verbose_printf("OUTPUT CHAR: %c\n", outChar);
             output_message[idx] = outChar;
         }
     }
     
     __syncthreads();
     if (tx == 0) {
-        printf("OUTPUT MESSAGE FROM GPU: \n");
+        verbose_printf("OUTPUT MESSAGE FROM GPU: \n");
         for (int i = 0; i < size_message; i++) {
             printf("%c", output_message[i]);
         }
-        printf("\n");
+        verbose_printf("\n");
     }
 
 }
@@ -140,8 +140,8 @@ int main() {
     for(int i =0; i<NUM_TESTS;i++){
 
         // GENERATE E , D ,and N
-        // bignum e = 65537;
-        bignum e = 131;
+        bignum e = 65537;
+        // bignum e = 131;
         
         // bignum p = 9461917253336215331;
         // bignum q = 13954742674334932447;
@@ -154,7 +154,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "HELLO THIS IS BOB GHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghjijklmnop";
+        char original_message[] = "HELLO THIS IS B OBGHIJKLMNOPQRSTUVWXYZabcdefghjijklmnopZYX";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
