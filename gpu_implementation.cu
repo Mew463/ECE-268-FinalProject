@@ -377,7 +377,7 @@ int main() {
         if(strcmp(original_message,output_message) != 0){
             num_errors++;
             for(int z = 0; z < msg_size; z++ ){
-                printf("%c", original_message);
+                printf("%c", original_message[z]);
             }
         }
 
@@ -392,7 +392,7 @@ int main() {
     if(num_errors == 0){
         printf("Data Matched ! :D\n");
     } else {
-        printf("Detected %d errors :(\n");
+        printf("Detected %d errors :(\n", num_errors);
     }
 
     printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n", NUM_TESTS, (double)ceilf(float(total_time)/float(NUM_TESTS)));
