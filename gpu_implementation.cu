@@ -3,7 +3,7 @@
 
 using bignum = __int128;
 
-__device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
+__device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
     return (a * b) % mod;
 }
 
@@ -86,7 +86,7 @@ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
 }
 
 
-__device__ char decrypt( bignum &d,  bignum &n,  bignum &c) {
+__device__ char decrypt( bignum d,  bignum n,  bignum c) {
     return do_modular_exponentiation(c, d, n);  
 }
 
@@ -95,7 +95,7 @@ __device__ bignum encrypt( bignum e, bignum n, char message) {
     return do_modular_exponentiation((int)message, e, n);
 }
 
-__global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_message, char *output_message,  bignum &e,  bignum &d,  bignum &n) { // Function that all threads run 
+__global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_message, char *output_message,  bignum e,  bignum d,  bignum n) { // Function that all threads run 
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
