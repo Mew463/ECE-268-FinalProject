@@ -359,7 +359,7 @@ int main() {
         cudaEventRecord(start, 0);
         
         // Run Kernel
-        int numThreads = 6000;
+        int numThreads = 1024;
         int numBlocks = 1;
 
         parallel_rsa_encrypt_decrypt<<<numBlocks, numThreads>>>(d_input, size_message, d_output, e, d, n);
