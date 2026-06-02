@@ -154,8 +154,7 @@ int main() {
         cudaDeviceSynchronize();
 
         for(int char_num = 0; char_num<100;char_num++){
-            printf("%c",output_message[char_num]);
-            printf("hello world");
+            printf("%d",int(output_message[char_num]));
         }
         // printf(output_message);
 
