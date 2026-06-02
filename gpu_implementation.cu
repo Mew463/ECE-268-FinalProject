@@ -145,8 +145,8 @@ int main() {
         // bignum p = 9461917253336215331;
         // bignum q = 13954742674334932447;
 
-        bignum p = 7;
-        bignum q = 13;
+        bignum p = 2;
+        bignum q = 3;
 
         RSAKeyPair keys = generate_keys(p, q, e);
         bignum d = keys.private_key.exponent;
