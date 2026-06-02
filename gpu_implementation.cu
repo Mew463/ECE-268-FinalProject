@@ -359,10 +359,16 @@ int main() {
         cudaEventRecord(start, 0);
         
         // Run Kernel
-        int numThreads = 1;
+        int numThreads = 6000;
         int numBlocks = 1;
 
         parallel_rsa_encrypt_decrypt<<<numBlocks, numThreads>>>(d_input, size_message, d_output, e, d, n);
+        cudaError_t err = cudaGetLastError();
+
+        if (err != cudaSuccess) {
+            printf("Kernel launch failed: %s\n",
+                cudaGetErrorString(err));
+        }
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
