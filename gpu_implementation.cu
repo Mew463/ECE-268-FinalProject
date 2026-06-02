@@ -3,7 +3,6 @@
 
 using bignum = __int128;
 
-bool VERBOSE_PRINT = true;
 
 // __device__ void verbose_printf(const char* message) {
 //     if(threadIdx.x && VERBOSE_PRINT){
@@ -109,13 +108,12 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
     int bs = blockDim.x; // Num threads per block
 
     if (tx == 0) {
-        if(VERBOSE_PRINT){
             printf("INPUT MESSAGE FROM GPU: \n");
             for (int i = 0; i < size_message; i++) {
                 printf("%c", input_message[i]);
             }
             printf("\n");
-        }
+        
     }
     __syncthreads();
 
@@ -125,27 +123,23 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
         int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx];
-            if(VERBOSE_PRINT){ 
-                printf("INPUT CHAR: %c\n", input_char);
-            }
+            printf("INPUT CHAR: %c\n", input_char);
             bignum output = encrypt(e, n, input_char);
             char outChar = decrypt(d, n, output);
-            if(VERBOSE_PRINT){
-                printf("OUTPUT CHAR: %c\n", outChar);
-            }
+            printf("OUTPUT CHAR: %c\n", outChar);
+            
             output_message[idx] = outChar;
         }
     }
     
     __syncthreads();
     if (tx == 0) {
-        if(VERBOSE_PRINT){
-            printf("OUTPUT MESSAGE FROM GPU: \n");
-            for (int i = 0; i < size_message; i++) {
-                printf("%c", output_message[i]);
-            }
-            printf("\n");
+        printf("OUTPUT MESSAGE FROM GPU: \n");
+        for (int i = 0; i < size_message; i++) {
+            printf("%c", output_message[i]);
         }
+        printf("\n");
+        
     }
 
 }
