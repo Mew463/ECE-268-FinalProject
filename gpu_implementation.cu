@@ -286,6 +286,7 @@ int main() {
         // bignum q = 879811033379399741;
         bignum p = generate_prime(60);
         bignum q = generate_prime(60);
+        printf("P: %d and q %d", p)
 
         // bignum p = 13;
         // bignum q = 131;
@@ -369,6 +370,7 @@ int main() {
 
         // Verify message
         if(strcmp(original_message,output_message) != 0){
+            printf("%c", output_message);
             num_errors++;
         }
 
