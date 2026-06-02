@@ -326,14 +326,14 @@ int main() {
         
         // bignum p = 958475160727834319;
         // bignum q = 879811033379399741;
-        // bignum p = generate_prime(60);
-        // bignum q = generate_prime(60);
+        bignum p = generate_prime(60);
+        bignum q = generate_prime(60);
         // // printf("P: %d and q %d", p);
-        // printf("P: %" PRIu64 ", and ", p);
-        // printf("q:   %" PRIu64 "\n", q);
+        printf("P: %" PRIu64 ", and ", p);
+        printf("q:   %" PRIu64 "\n", q);
 
-        bignum p = 13;
-        bignum q = 131;
+        // bignum p = 13;
+        // bignum q = 131;
 
         RSAKeyPair keys = generate_keys(p, q, e);
         bignum d = keys.private_key.exponent;
