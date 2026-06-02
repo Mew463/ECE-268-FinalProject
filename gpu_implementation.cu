@@ -131,7 +131,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
             char input_char = input_message[idx];
             printf("INPUT CHAR: %c\n", input_char);
             bignum output = encrypt(e, n, input_char);
-            printf("output after encrypt: %d", output);
+            printf("output after encrypt: %d\n", output);
             char outChar = decrypt(d, n, output);
             printf("OUTPUT CHAR: %c\n", outChar);
             
@@ -177,7 +177,7 @@ int main() {
 
         printf("Launching kernel...\n");
         char original_message[] = "a";
-        int size_message = sizeof(original_message) / sizeof(original_message[0]);
+        int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
         char output_message[100];
 
 
@@ -198,7 +198,7 @@ int main() {
         
         // Run Kernel
 
-        parallel_rsa_encrypt_decrypt<<<1, 32>>>(d_input, size_message, d_output, e, d, n);
+        parallel_rsa_encrypt_decrypt<<<1, 1>>>(d_input, size_message, d_output, e, d, n);
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
