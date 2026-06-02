@@ -188,8 +188,8 @@ int main() {
     for(int i =0; i<NUM_TESTS;i++){
 
         // GENERATE E , D ,and N
-        // bignum e = 65537;
-        bignum e = 7;
+        bignum e = 65537;
+        // bignum e = 7;
         
         bignum p = 958475160727834319;
         bignum q = 879811033379399741;
