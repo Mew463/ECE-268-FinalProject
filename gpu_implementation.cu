@@ -288,7 +288,7 @@ int main() {
         bignum q = generate_prime(60);
         // printf("P: %d and q %d", p);
         printf("P: %" PRIu64 ", and ", p);
-        printf("q:   %" PRIx64 "\n", q);
+        printf("q:   %" PRIu64 "\n", q);
 
         // bignum p = 13;
         // bignum q = 131;
@@ -352,7 +352,7 @@ int main() {
         cudaEventRecord(start, 0);
         
         // Run Kernel
-        int numThreads = 32;
+        int numThreads = 400;
         int numBlocks = 1;
 
         parallel_rsa_encrypt_decrypt<<<1, numThreads>>>(d_input, size_message, d_output, e, d, n);
