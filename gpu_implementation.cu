@@ -4,15 +4,21 @@
 using bignum = __int128;
 
 
-// __device__ void verbose_printf(const char* message) {
-//     if(threadIdx.x && VERBOSE_PRINT){
-//         printf("%s", message);
-//     }
-// }
-
 
 __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
-    return (a * b) % mod;
+    // return (a * b) % mod;
+    bignum result = 0;
+    a %= mod;
+
+    while (b > 0) {
+        if (b & 1)
+            result = (result + a) % mod;
+
+        a = (a + a) % mod;
+        b >>= 1;
+    }
+
+    return result;
 }
 
 __device__ bignum do_modular_exponentiation( bignum a, bignum b, bignum mod ) { // Performs square and multiply real fast
@@ -98,7 +104,7 @@ __device__ char decrypt( bignum d,  bignum n,  bignum c) {
     return do_modular_exponentiation(c, d, n);  
 }
 
-__device__ bignum encrypt( bignum e, bignum n, char message) {
+__device__ bignum encrypt( bignum e, bignum n, unsigned char message) {
     // __int128 big_message = (unsigned char)message;
     return do_modular_exponentiation((int)message, e, n);
 }
@@ -125,6 +131,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
             char input_char = input_message[idx];
             printf("INPUT CHAR: %c\n", input_char);
             bignum output = encrypt(e, n, input_char);
+            printf("output after encrypt: %d", output);
             char outChar = decrypt(d, n, output);
             printf("OUTPUT CHAR: %c\n", outChar);
             
@@ -169,7 +176,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "HELLO THIS IS BOBXYZabcdefghjijklmnopZYX";
+        char original_message[] = "a";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
