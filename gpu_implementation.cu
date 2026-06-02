@@ -3,6 +3,17 @@
 
 using bignum = __int128;
 
+VERBOSE_PRINT = true;
+
+__device__ void verbose_printf(const char* message) {
+    if(threadIdx.x && VERBOSE_PRINT){
+        printf("%s", message);
+    }
+}
+
+
+
+
 __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
     return (a * b) % mod;
 }
@@ -133,6 +144,10 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 
 }
 
+
+VERBOSE_PRINT = true;
+
+
 int main() {
 
     int NUM_TESTS = 10;
@@ -141,7 +156,6 @@ int main() {
 
         // GENERATE E , D ,and N
         bignum e = 65537;
-        // bignum e = 131;
         
         // bignum p = 9461917253336215331;
         // bignum q = 13954742674334932447;
@@ -154,7 +168,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "HELLO THIS IS B OBGHIJKLMNOPQRSTUVWXYZabcdefghjijklmnopZYX";
+        char original_message[] = "HELLO THIS IS BOBXYZabcdefghjijklmnopZYX";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
