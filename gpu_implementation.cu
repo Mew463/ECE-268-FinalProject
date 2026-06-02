@@ -155,7 +155,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "HHHHABCDEFGHello this is Bob";
+        char original_message[] = "HELLO THIS IS BOB";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
