@@ -4,6 +4,7 @@
 using bignum = __int128;
 
 __device__ void print_int128(__int128 x) {
+
     if (x == 0) {
         printf("0");
         return;
@@ -18,12 +19,12 @@ __device__ void print_int128(__int128 x) {
     int i = 0;
 
     while (x > 0) {
-        buf[i++] = '0' + (x % 10);
+        buf[i++] = '0' + (int)(x % 10);
         x /= 10;
     }
 
-    while (i--) {
-        putchar(buf[i]);
+    while (i > 0) {
+        printf("%c", buf[--i]);
     }
 }
 
