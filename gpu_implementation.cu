@@ -101,8 +101,8 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
 
     if (tx == 0) {
         printf("INPUT MESSAGE FROM GPU: ");
-        for (int i =0; i < size_message; i++) {
-            printf(input_message);
+        for (int i = 0; i < size_message; i++) {
+            printf(input_message[i]);
         }
         printf("\n");
     }
