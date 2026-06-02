@@ -333,7 +333,7 @@ int main() {
         
         
         int size_message = sizeof(original_message) / sizeof(original_message[0]) - 1;
-        char output_message[100];
+        char output_message[2000];
 
 
         char *d_input;
@@ -372,12 +372,14 @@ int main() {
 
         // Verify message
         if(strcmp(original_message,output_message) != 0){
-            printf("%c", output_message);
             num_errors++;
         }
 
     }
     printf("Done.\n");
+    for(int z = 0; z < size_message;z++ ){
+        printf("%c",output_message[z]);
+    }
 
     if(num_errors == 0){
         printf("Data Matched ! :D\n");
