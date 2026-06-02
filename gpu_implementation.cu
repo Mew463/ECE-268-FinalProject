@@ -378,7 +378,7 @@ int main() {
     if(num_errors == 0){
         printf("Data Matched ! :D\n");
     } else {
-        printf("Detected %d errors :(\n")
+        printf("Detected %d errors :(\n");
     }
 
     printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n", NUM_TESTS, (double)ceilf(float(total_time)/float(NUM_TESTS)));
