@@ -153,7 +153,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "HELLO THIS IS BOB GHIJKLMNOPQRSTUVWXYZabcdefghjijklmnop";
+        char original_message[] = "HELLO THIS IS BOB GHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghjijklmnop";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
