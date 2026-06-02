@@ -188,13 +188,17 @@ int main() {
     for(int i =0; i<NUM_TESTS;i++){
 
         // GENERATE E , D ,and N
-        bignum e = 65537;
+        // bignum e = 65537;
+        bignum e = 7;
         
-        // bignum p = 9461917253336215331;
-        // bignum q = 13954742674334932447;
+        bignum p = 958475160727834319;
+        bignum q = 879811033379399741;
 
-        bignum p = 13;
-        bignum q = 131;
+
+        
+
+        // bignum p = 13;
+        // bignum q = 131;
 
         RSAKeyPair keys = generate_keys(p, q, e);
         bignum d = keys.private_key.exponent;

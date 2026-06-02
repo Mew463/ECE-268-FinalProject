@@ -185,7 +185,6 @@ def do_rsa(p,q):
 
 
 
-
 verbose_print = False
 
 sum_time = 0
