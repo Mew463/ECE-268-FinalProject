@@ -152,13 +152,13 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
         int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx];
-            printf("INPUT CHAR: %c\n", input_char);
+            // printf("INPUT CHAR: %c\n", input_char);
             bignum output = encrypt(e, n, input_char);
-            printf("output after encrypt: ");
-            print_int128(output);
-            printf("\n");
+            // printf("output after encrypt: ");
+            // print_int128(output);
+            // printf("\n");
             char outChar = decrypt(d, n, output);
-            printf("OUTPUT CHAR num: %d\n", outChar);
+            // printf("OUTPUT CHAR num: %d\n", outChar);
             
             output_message[idx] = outChar;
         }
