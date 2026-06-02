@@ -4,7 +4,7 @@
 #include <random>
 #include <inttypes.h>
 
-using bignum = __int128;
+using bignum = int;
 
 __device__ void print_int128(__int128 x) {
 
