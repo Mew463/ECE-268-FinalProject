@@ -3,11 +3,11 @@
 
 using bignum = __int128;
 
-__device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) {
+__device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
     return (a * b) % mod;
 }
 
-__device__ bignum do_modular_exponentiation( bignum a, bignum &b, bignum &mod ) { // Performs square and multiply real fast
+__device__ bignum do_modular_exponentiation( bignum a, bignum b, bignum mod ) { // Performs square and multiply real fast
     bignum result = 1;
     a = a % mod;
     while (b > 0) {
@@ -86,7 +86,7 @@ RSAKeyPair generate_keys(bignum p, bignum q, bignum e){
 }
 
 
-__device__ char decrypt( bignum &d,  bignum &n,  bignum &c) {
+__device__ char decrypt( bignum d,  bignum n,  bignum c) {
     return do_modular_exponentiation(c, d, n);  
 }
 
@@ -105,7 +105,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
         if(idx < size_message) {
             char input_char = input_message[idx]; 
             bignum output = encrypt(e, n, input_char);
-            char outChar = decrypt(output, d, n);
+            char outChar = decrypt(d, n, output);
             output_message[idx] = outChar;
         }
     }
@@ -113,8 +113,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
 }
 
 
-int main() {
-
+__global__ void gpu_main(){
     int NUM_TESTS = 10;
     float total_time = 0;
     for(int i =0; i<NUM_TESTS;i++){
@@ -143,7 +142,7 @@ int main() {
         cudaEventRecord(start, 0);
 
         // Run Kernel
-        parallel_rsa_encrypt_decrypt<<<1, 1>>>(original_message, size_message, output_message, e, d, n); // Blocks, Threads
+        parallel_rsa_encrypt_decrypt(original_message, size_message, output_message, e, d, n); // Blocks, Threads
         
         // Conclude timer operations
         cudaEventRecord(stop, 0);
@@ -164,4 +163,15 @@ int main() {
     printf("Done.\n");
     printf("AVERAGE TIME ACROSS %d TESTS: %f ms\n",NUM_TESTS, ceilf(float(total_time)/float(NUM_TESTS)));
     return 0;
+}
+
+
+
+
+
+
+
+int main() {
+    gpu_main<<<1, 1>>>();
+    
 }
