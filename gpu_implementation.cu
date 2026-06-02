@@ -12,8 +12,6 @@ __device__ void verbose_printf(const char* message) {
 }
 
 
-
-
 __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
     return (a * b) % mod;
 }
@@ -125,7 +123,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
         int idx = (i*bs)+tx;
         if(idx < size_message) {
             char input_char = input_message[idx]; 
-            verbose_printf("INPUT CHAR: %c\n", input_char);
+            verbose_printf(("INPUT CHAR: %c\n", input_char));
             bignum output = encrypt(e, n, input_char);
             char outChar = decrypt(d, n, output);
             verbose_printf("OUTPUT CHAR: %c\n", outChar);
