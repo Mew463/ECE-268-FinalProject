@@ -126,7 +126,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
         if(idx < size_message) {
             char input_char = input_message[idx];
             if(VERBOSE_PRINT){ 
-                printf(("INPUT CHAR: %c\n", input_char));
+                printf("INPUT CHAR: %c\n", input_char));
             }
             bignum output = encrypt(e, n, input_char);
             char outChar = decrypt(d, n, output);
