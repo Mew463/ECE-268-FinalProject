@@ -263,6 +263,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
             char outChar = decrypt(d, n, output);
             
             output_message[idx] = outChar;
+            printf("%c",outChar);
         }
     }
 
@@ -375,6 +376,9 @@ int main() {
         // Verify message
         if(strcmp(original_message,output_message) != 0){
             num_errors++;
+            for(int z = 0; z < msg_size; z++ ){
+                printf("%c", original_message);
+            }
         }
 
     }
