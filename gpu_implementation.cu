@@ -153,7 +153,10 @@ int main() {
         cudaEventDestroy(stop);
         cudaDeviceSynchronize();
 
-        printf(output_message);
+        for(int char_num = 0; char_num<100;char_num++){
+            printf("%c",output_message[char_num])
+        }
+        // printf(output_message);
 
         // Update total accumulated time
         total_time+=test_time;
