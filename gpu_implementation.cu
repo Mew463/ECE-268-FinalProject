@@ -7,7 +7,7 @@ __device__ bignum do_modular_multiplication( bignum &a, bignum &b, bignum &mod) 
     return (a * b) % mod;
 }
 
-__device__ bignum do_modular_exponentiation( bignum &a, bignum &b, bignum &mod ) { // Performs square and multiply real fast
+__device__ bignum do_modular_exponentiation( bignum a, bignum &b, bignum &mod ) { // Performs square and multiply real fast
     bignum result = 1;
     a = a % mod;
     while (b > 0) {
@@ -152,6 +152,8 @@ int main() {
         cudaEventDestroy(start);
         cudaEventDestroy(stop);
         cudaDeviceSynchronize();
+
+        printf(output_message);
 
         // Update total accumulated time
         total_time+=test_time;
