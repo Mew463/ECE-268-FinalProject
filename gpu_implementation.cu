@@ -278,28 +278,7 @@ int main() {
     int num_errors = 0;
     int NUM_TESTS = 1;
     float total_time = 0;
-    for(int i =0; i<NUM_TESTS;i++){
-
-        // GENERATE E , D ,and N
-        bignum e = 65537;
-        
-        // bignum p = 958475160727834319;
-        // bignum q = 879811033379399741;
-        bignum p = generate_prime(60);
-        bignum q = generate_prime(60);
-        // printf("P: %d and q %d", p);
-        printf("P: %" PRIu64 ", and ", p);
-        printf("q:   %" PRIu64 "\n", q);
-
-        // bignum p = 13;
-        // bignum q = 131;
-
-        RSAKeyPair keys = generate_keys(p, q, e);
-        bignum d = keys.private_key.exponent;
-        bignum n = keys.private_key.modulus;
-
-        printf("Launching kernel...\n");
-        char original_message[] = 
+    char original_message[] = 
         "One morning, when Gregor Samsa woke from troubled dreams, he found"
         "himself transformed in his bed into a horrible vermin.  He lay on"
         "his armour-like back, and if he lifted his head a little he could"
@@ -330,6 +309,28 @@ int main() {
         "wouldn't have to look at the floundering legs, and only stopped when"
         "he began to feel a mild, dull pain there that he had never felt"
         "before.";
+    for(int i =0; i<NUM_TESTS;i++){
+
+        // GENERATE E , D ,and N
+        bignum e = 65537;
+        
+        // bignum p = 958475160727834319;
+        // bignum q = 879811033379399741;
+        bignum p = generate_prime(60);
+        bignum q = generate_prime(60);
+        // printf("P: %d and q %d", p);
+        printf("P: %" PRIu64 ", and ", p);
+        printf("q:   %" PRIu64 "\n", q);
+
+        // bignum p = 13;
+        // bignum q = 131;
+
+        RSAKeyPair keys = generate_keys(p, q, e);
+        bignum d = keys.private_key.exponent;
+        bignum n = keys.private_key.modulus;
+
+        printf("Launching kernel...\n");
+        
         
         
         
