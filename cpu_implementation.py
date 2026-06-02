@@ -121,7 +121,7 @@ primes = [
 # large_primes = [generate_large_prime() for  _ in range(2)]
 # print(large_primes)
 
-print(do_modular_inverse_extended_euclidean(640, 49))
+# print(do_modular_inverse_extended_euclidean(640, 49))
 
 
 
@@ -197,7 +197,7 @@ for i in range(num_iter):
     do_rsa(p=p,q=q)
     end_time = time.perf_counter()
     sum_time+=(end_time-start_time)
-print(f"RSA average time: {sum_time/num_iter}")
+print(f"RSA average time (ms): {1000 * sum_time/num_iter }")
 
 
 

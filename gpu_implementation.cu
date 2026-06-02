@@ -99,14 +99,14 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
-    if (tx == 0) {
-        printf("INPUT MESSAGE FROM GPU: ");
-        for (int i = 0; i < size_message; i++) {
-            printf("%c", input_message[i]);
-        }
-        printf("\n");
-    }
-    __syncthreads();
+    // if (tx == 0) {
+    //     printf("INPUT MESSAGE FROM GPU: ");
+    //     for (int i = 0; i < size_message; i++) {
+    //         printf("%c", input_message[i]);
+    //     }
+    //     printf("\n");
+    // }
+    // __syncthreads();
 
     int chars_per_thread = ceilf(float(size_message) / float(bs));
     for(int i=0;i<chars_per_thread; i++){
@@ -119,14 +119,14 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
         }
     }
 
-    if (tx == 0) {
-        printf("OUTPUT MESSAGE FROM GPU: ");
-        for (int i = 0; i < size_message; i++) {
-            printf("%c", output_message[i]);
-        }
-        printf("\n");
-    }
-    __syncthreads();
+    // if (tx == 0) {
+    //     printf("OUTPUT MESSAGE FROM GPU: ");
+    //     for (int i = 0; i < size_message; i++) {
+    //         printf("%c", output_message[i]);
+    //     }
+    //     printf("\n");
+    // }
+    // __syncthreads();
 
 }
 
