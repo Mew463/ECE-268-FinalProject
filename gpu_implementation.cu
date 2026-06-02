@@ -110,8 +110,6 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int size_mess
 
     int chars_per_thread = ceilf(float(size_message) / float(bs));
 
-    printf("chars_per_thread: %d\n",chars_per_thread);
-
     for(int i=0;i<chars_per_thread; i++){
         int idx = (i*bs)+tx;
         if(idx < size_message) {
@@ -155,7 +153,7 @@ int main() {
         bignum n = keys.private_key.modulus;
 
         printf("Launching kernel...\n");
-        char original_message[] = "HELLO THIS IS BOB";
+        char original_message[] = "HELLO THIS IS BOB GHIJKLMNOPQRSTUVWXYZabcdefghjijklmnop";
         int size_message = sizeof(original_message) / sizeof(original_message[0]);
         char output_message[100];
 
