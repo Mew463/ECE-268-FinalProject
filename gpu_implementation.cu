@@ -102,7 +102,7 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
     if (tx == 0) {
         printf("INPUT MESSAGE FROM GPU: ");
         for (int i = 0; i < size_message; i++) {
-            printf(input_message[i]);
+            printf("%c", input_message[i]);
         }
         printf("\n");
     }
@@ -149,7 +149,7 @@ int main() {
         cudaMalloc(&d_input, size_message * sizeof(char));
         cudaMalloc(&d_output, size_message * sizeof(char));
         
-        cudaMemcpy(d_input, original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_input, &original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
                 
         // Begin timer operations
         float test_time = 0;
@@ -170,7 +170,7 @@ int main() {
         cudaEventDestroy(stop);
         cudaDeviceSynchronize();
 
-        cudaMemcpy(output_message, d_output, size_message * sizeof(char), cudaMemcpyDeviceToHost);
+        cudaMemcpy(&output_message, d_output, size_message * sizeof(char), cudaMemcpyDeviceToHost);
 
         for(int char_num = 0; char_num<100;char_num++){
             printf("%d",int(output_message[char_num]));
