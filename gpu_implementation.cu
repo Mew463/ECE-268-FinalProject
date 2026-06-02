@@ -357,7 +357,7 @@ int main() {
         int numThreads = 6000;
         int numBlocks = 1;
 
-        parallel_rsa_encrypt_decrypt<<<1, numThreads>>>(d_input, size_message, d_output, e, d, n);
+        parallel_rsa_encrypt_decrypt<<<numBlocks, numThreads>>>(d_input, size_message, d_output, e, d, n);
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
@@ -382,7 +382,7 @@ int main() {
 
     
     for(int z = 0; z < msg_size;z++ ){
-        printf("%c",output_message[z]);
+        printf("%d", (int)output_message[z]);
     }
 
     if(num_errors == 0){
