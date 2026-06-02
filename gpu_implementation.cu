@@ -172,7 +172,7 @@ int main() {
         
         // Run Kernel
 
-        parallel_rsa_encrypt_decrypt<<<1, 8>>>(d_input, size_message, d_output, e, d, n);
+        parallel_rsa_encrypt_decrypt<<<1, 1>>>(d_input, size_message, d_output, e, d, n);
 
         // Conclude timer operations
         cudaEventRecord(stop, 0);
