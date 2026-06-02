@@ -141,7 +141,7 @@ int main() {
 
         // GENERATE E , D ,and N
         // bignum e = 65537;
-        bignum e = 129;
+        bignum e = 131;
         
         // bignum p = 9461917253336215331;
         // bignum q = 13954742674334932447;
