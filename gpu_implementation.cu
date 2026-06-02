@@ -99,6 +99,15 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
     int tx = threadIdx.x;
     int bs = blockDim.x; // Num threads per block
 
+    if (tx == 0) {
+        print("INPUT MESSAGE FROM GPU: ");
+        for (int i =0; i < size_message; i++) {
+            print(input_message);
+        }
+        print("\n");
+    }
+    __syncthreads();
+
     int chars_per_thread = ceilf(float(size_message) / float(bs));
     for(int i=0;i<chars_per_thread; i++){
         int idx = (i*bs)+tx;
@@ -111,15 +120,6 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
     }
 
 }
-
-
-
-
-
-
-
-
-
 
 int main() {
 
@@ -169,6 +169,8 @@ int main() {
         cudaEventDestroy(start);
         cudaEventDestroy(stop);
         cudaDeviceSynchronize();
+
+        cudaMemcpy(output_message, d_output, size_message * sizeof(char), cudaMemcpyDeviceToHost);
 
         for(int char_num = 0; char_num<100;char_num++){
             printf("%d",int(output_message[char_num]));
