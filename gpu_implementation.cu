@@ -100,11 +100,11 @@ __global__ void parallel_rsa_encrypt_decrypt(char *input_message,  int &size_mes
     int bs = blockDim.x; // Num threads per block
 
     if (tx == 0) {
-        print("INPUT MESSAGE FROM GPU: ");
+        printf("INPUT MESSAGE FROM GPU: ");
         for (int i =0; i < size_message; i++) {
-            print(input_message);
+            printf(input_message);
         }
-        print("\n");
+        printf("\n");
     }
     __syncthreads();
 
