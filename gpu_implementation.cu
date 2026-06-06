@@ -32,18 +32,20 @@ __device__ void print_int128(__int128 x) {
 }
 
 __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
-    bignum result = 0;
-    a %= mod;
+    // bignum result = 0;
+    // a %= mod;
 
-    while (b > 0) {
-        if (b & 1)
-            result = (result + a) % mod;
+    // while (b > 0) {
+    //     if (b & 1)
+    //         result = (result + a) % mod;
 
-        a = (a + a) % mod;
-        b >>= 1;
-    }
+    //     a = (a + a) % mod;
+    //     b >>= 1;
+    // }
 
-    return result;
+    // return result;
+
+    return (a * b) % mod;
 }
 
 
