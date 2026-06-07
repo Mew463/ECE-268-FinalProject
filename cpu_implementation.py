@@ -157,8 +157,8 @@ def do_rsa(p,q):
 
 
     # Bob will then encrypt his message using Alice's public key components
-    original_message = "A"
-    original_message = "Hello this is Bob"
+    # original_message = "A"
+    # original_message = "Hello this is Bob"
     original_message = """
     
         One morning, when Gregor Samsa woke from troubled dreams, he found
