@@ -349,7 +349,7 @@ int main() {
         cudaMemcpy(d_input, original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
                 
         // Run Kernel
-        int numThreads = 1024;
+        int numThreads = 1;
         int numBlocks = 1;
 
 
