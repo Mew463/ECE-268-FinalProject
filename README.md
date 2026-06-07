@@ -1,12 +1,12 @@
 # Our Project
+We implemented the extended euclidean algorithm for computing the modular inverse. Our goal is to demonstrate our working functions by performing RSA encryption/decryption on the CPU and GPU and compare the result to see if GPU parallelism can speed up the process.
 
-## Modular Arithmetic Unit
-Implement a modular arithmetic engine over a large prime field used in cryptographic operations.
-- Support modular multiplication, modular exponentiation, and
-Modular inverse (via Fermat or Extended Euclidean).
+The CPU implementations were tested on a MacBook M3 Pro 18GB running Python 3.13.3 and a Ryzen 5 5600H with Python 3.13.7. The GPU implementation was completed with UCSD datahub's NVIDIA GeForce RTX 2080ti with CUDA Version 12.2. It is important to note that the GPU implementation is written in the native CUDA language. 
 
-## Applying 
-Apply your unit to a real cryptographic operation (e.g., scalar multiplication, RSA, or Number Theoretic Transform).
+# Running on CPU
+`python3 cpu_implementation.py`
 
-# Compile and Run on C++
-nvcc gpu_implementation.cu -o test && ./test
+
+# Compile and Run on Datahub GPU
+`nvcc gpu_implementation.cu -o test && ./test`
+
