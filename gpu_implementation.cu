@@ -277,9 +277,10 @@ int main() {
 
     int msg_size = 0;
     int num_errors = 0;
-    int NUM_TESTS = 1;
+    int NUM_TESTS = 10;
     float total_time = 0;
-    // char original_message[] = "Hello this is bruh.";
+    // char original_message[] = "A";
+    // char original_message[] = "Hello this is Bob.";
     char original_message[] = 
         "One morning, when Gregor Samsa woke from troubled dreams, he found"
         "himself transformed in his bed into a horrible vermin.  He lay on"
