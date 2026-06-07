@@ -277,7 +277,7 @@ int main() {
 
     int msg_size = 0;
     int num_errors = 0;
-    int NUM_TESTS = 10;
+    int NUM_TESTS = 1;
     float total_time = 0;
     // char original_message [] = "A";
     // char original_message[] = "Hello this is Bob.";
@@ -349,7 +349,7 @@ int main() {
         cudaMemcpy(d_input, original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
                 
         // Run Kernel
-        int numThreads = 1;
+        int numThreads = 1024;
         int numBlocks = 1;
 
 
