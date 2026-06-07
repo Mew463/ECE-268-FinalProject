@@ -42,7 +42,6 @@ __device__ bignum do_modular_multiplication( bignum a, bignum b, bignum mod) {
         a = (a + a) % mod;
         b >>= 1;
     }
-
     return result;
 
     // return (a * b) % mod;
@@ -278,9 +277,10 @@ int main() {
 
     int msg_size = 0;
     int num_errors = 0;
-    int NUM_TESTS = 1;
+    int NUM_TESTS = 10;
     float total_time = 0;
-    // char original_message[] = "Hello this is bruh.";
+    char original_message [] = "A";
+    char original_message[] = "Hello this is Bob.";
     char original_message[] = 
         "One morning, when Gregor Samsa woke from troubled dreams, he found"
         "himself transformed in his bed into a horrible vermin.  He lay on"
@@ -349,7 +349,7 @@ int main() {
         cudaMemcpy(d_input, original_message, size_message * sizeof(char), cudaMemcpyHostToDevice);
                 
         // Run Kernel
-        int numThreads = 1024;
+        int numThreads = 1;
         int numBlocks = 1;
 
 

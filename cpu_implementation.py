@@ -48,7 +48,6 @@ def generate_keys(p, q, e) -> dict:
         raise ValueError("e and phi_n are not coprime")
 
     d = x % phi_n
-
     return {
         "public_key": (e, n),
         "private_key": (d, n)
@@ -158,6 +157,8 @@ def do_rsa(p,q):
 
 
     # Bob will then encrypt his message using Alice's public key components
+    original_message = "A"
+    original_message = "Hello this is Bob"
     original_message = """
     
         One morning, when Gregor Samsa woke from troubled dreams, he found
